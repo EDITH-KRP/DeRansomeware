@@ -1,0 +1,28 @@
+{
+  "name": "deransom-contracts",
+  "version": "0.1.0",
+  "description": "Smart contracts for De-Ransom project",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run deploy.js --network sepolia",
+    "test": "hardhat test"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "smart-contracts",
+    "ransomware",
+    "security"
+  ],
+  "author": "De-Ransom Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.14.0"
+  }
+}

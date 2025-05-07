@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De-Ransom: Decentralized Ransomware Protection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">De-Ransom</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <h1 class="display-4">De-Ransom</h1>
+                <p class="lead">A Decentralized Ransomware Detection & Response System</p>
+                <hr class="my-4">
+                <p>Protect your files with blockchain-powered security and decentralized backups.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="dashboard.html" class="btn btn-primary btn-lg px-4 me-md-2">View Dashboard</a>
+                    <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5" id="features">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Real-time Detection</h5>
+                        <p class="card-text">Our system monitors file changes in real-time to detect suspicious encryption patterns typical of ransomware attacks.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Decentralized Backups</h5>
+                        <p class="card-text">Critical files are automatically backed up to IPFS via Filebase, ensuring they remain accessible even if local copies are compromised.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Blockchain Verification</h5>
+                        <p class="card-text">All security events are logged to the Ethereum blockchain, creating an immutable record of file activity and potential threats.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2023 De-Ransom | 24-Hour Hackathon Project</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/websocket.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

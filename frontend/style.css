@@ -1,0 +1,119 @@
+/* Custom styles for De-Ransom application */
+
+:root {
+    --primary-color: #0d6efd;
+    --danger-color: #dc3545;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --dark-color: #212529;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Dashboard styles */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1rem;
+}
+
+.risk-high {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.risk-medium {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    font-weight: bold;
+}
+
+.risk-low {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: var(--success-color);
+}
+
+/* Animation for alerts */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.alert-pulse {
+    animation: pulse 1.5s infinite;
+}
+
+/* IPFS link styling */
+.ipfs-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.ipfs-link:hover {
+    text-decoration: underline;
+}
+
+/* Blockchain transaction link */
+.tx-link {
+    color: var(--primary-color);
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+/* Status badges */
+.badge {
+    padding: 0.5em 0.75em;
+}
+
+/* Custom header styling */
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* Hero section on homepage */
+.display-4 {
+    font-weight: 600;
+}
+
+/* Feature cards on homepage */
+#features .card {
+    transition: transform 0.3s ease;
+}
+
+#features .card:hover {
+    transform: translateY(-5px);
+}
+
+/* Activity log table */
+#activityLog tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#activityLog tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
