@@ -7,4 +7,8 @@ boto3==1.26.135
 requests==2.28.2
 pytest==7.3.1
 websockets==10.4
-# Removing lru-dict as it requires C++ build tools
+# Use a pure Python alternative to lru-dict
+cachetools==5.3.1
+# Specific version of Werkzeug that works with Flask 2.2.3
+werkzeug==2.2.3
+# Exclude web3 dependencies that require C++ build tools

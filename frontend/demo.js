@@ -41,11 +41,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     if (startMonitoringBtn) {
         startMonitoringBtn.addEventListener('click', function() {
-            if (directoryModal) {
-                directoryModal.show();
-            } else {
-                startMonitoring('C:\\Users\\Documents');
-            }
+            // Get directories from API first
+            fetch('/api/directories')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.directories && data.directories.length > 0) {
+                        // Start monitoring with auto-detected directories
+                        startMonitoring(data.directories.join(', '));
+                    } else if (directoryModal) {
+                        directoryModal.show();
+                    } else {
+                        startMonitoring('System Directories');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching directories:', err);
+                    if (directoryModal) {
+                        directoryModal.show();
+                    } else {
+                        startMonitoring('System Directories');
+                    }
+                });
         });
     }
     
@@ -57,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (confirmDirectoryBtn) {
         confirmDirectoryBtn.addEventListener('click', function() {
-            const path = directoryPathInput.value.trim() || 'C:\\Users\\Documents';
+            const path = directoryPathInput.value.trim() || 'System Directories';
             directoryModal.hide();
             startMonitoring(path);
         });

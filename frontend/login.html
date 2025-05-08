@@ -3,141 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | De-Ransom</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>De-Ransom - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #0a0e17;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 128, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 20%);
+        }
+        
+        .login-container {
+            background-color: #141c2c;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 
+                        0 0 40px rgba(0, 128, 255, 0.1),
+                        0 0 60px rgba(255, 0, 0, 0.1);
+            width: 400px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #0066ff, transparent, #ff0033);
+            z-index: -1;
+            border-radius: 10px;
+            animation: border-animation 10s linear infinite;
+        }
+        
+        @keyframes border-animation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo i {
+            font-size: 60px;
+            color: #0066ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 102, 255, 0.7);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1e2738;
+            color: #ffffff;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0066ff;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #5a6a8a;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #0066ff, #0044cc);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #0044cc, #0033aa);
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+        }
+        
+        .links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .links a {
+            color: #0066ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .links a:hover {
+            color: #ff0033;
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background-color: rgba(255, 0, 51, 0.1);
+            border: 1px solid #ff0033;
+            color: #ff0033;
+        }
+        
+        .security-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 102, 255, 0.1);
+            border: 1px solid #0066ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .security-badge i {
+            color: #0066ff;
+            font-size: 20px;
+        }
+        
+        .binary-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .binary-text {
+            position: absolute;
+            font-family: monospace;
+            font-size: 14px;
+            color: #0066ff;
+            white-space: nowrap;
+            animation: binary-fall 20s linear infinite;
+        }
+        
+        @keyframes binary-fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">De-Ransom</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dashboard.html">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="login.html">Login</a>
-                    </li>
-                </ul>
-            </div>
+    <div class="binary-background" id="binary-background"></div>
+    
+    <div class="login-container">
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
         </div>
-    </nav>
-
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="mb-0">Login</h4>
-                    </div>
-                    <div class="card-body">
-                        <form id="loginForm">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" required>
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">Remember me</label>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                        <div class="text-center mt-3">
-                            <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-4 d-none" id="registerCard">
-                    <div class="card-header">
-                        <h4 class="mb-0">Register</h4>
-                    </div>
-                    <div class="card-body">
-                        <form id="registerForm">
-                            <div class="mb-3">
-                                <label for="registerName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="registerName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="registerEmail" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="registerEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="registerPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="registerPassword" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="confirmPassword" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success">Register</button>
-                            </div>
-                        </form>
-                        <div class="text-center mt-3">
-                            <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
-                        </div>
-                    </div>
-                </div>
+        
+        <div class="logo">
+            <i class="fas fa-lock-open"></i>
+            <h1>De-Ransom</h1>
+        </div>
+        
+        <div class="alert alert-danger" id="error-alert">
+            Invalid username or password
+        </div>
+        
+        <form id="login-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Username" required>
             </div>
+            
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            
+            <button type="submit">SECURE LOGIN</button>
+        </form>
+        
+        <div class="links">
+            <a href="register.html">Create Account</a>
+            <a href="#">Forgot Password?</a>
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">© 2023 De-Ransom | 24-Hour Hackathon Project</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const registerCard = document.getElementById('registerCard');
-            const showRegister = document.getElementById('showRegister');
-            const showLogin = document.getElementById('showLogin');
-
-            // Toggle between login and register forms
-            showRegister.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerCard.classList.remove('d-none');
-                loginForm.closest('.card').classList.add('d-none');
-            });
-
-            showLogin.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerCard.classList.add('d-none');
-                loginForm.closest('.card').classList.remove('d-none');
-            });
-
-            // Handle login form submission
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // For demo purposes, just redirect to dashboard
-                window.location.href = 'dashboard.html';
-            });
-
-            // Handle register form submission
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // For demo purposes, just redirect to dashboard
-                window.location.href = 'dashboard.html';
-            });
+        // Create binary background effect
+        function createBinaryBackground() {
+            const container = document.getElementById('binary-background');
+            const screenWidth = window.innerWidth;
+            
+            for (let i = 0; i < 20; i++) {
+                const column = document.createElement('div');
+                column.className = 'binary-text';
+                column.style.left = `${Math.random() * screenWidth}px`;
+                column.style.animationDuration = `${15 + Math.random() * 10}s`;
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                
+                let binaryString = '';
+                for (let j = 0; j < 100; j++) {
+                    binaryString += Math.round(Math.random());
+                }
+                
+                column.textContent = binaryString;
+                container.appendChild(column);
+            }
+        }
+        
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorAlert = document.getElementById('error-alert');
+            
+            try {
+                console.log('Sending login request...');
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password }),
+                    credentials: 'include'
+                });
+                console.log('Login response:', response);
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Login successful
+                    errorAlert.style.display = 'none';
+                    
+                    // Redirect based on user role
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    // Login failed
+                    errorAlert.textContent = data.error || 'Login failed';
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorAlert.textContent = 'Network error. Please try again.';
+                errorAlert.style.display = 'block';
+            }
         });
+        
+        // Initialize
+        createBinaryBackground();
     </script>
 </body>
 </html>

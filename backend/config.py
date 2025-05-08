@@ -61,8 +61,28 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 LOG_FILE = os.path.join(os.path.dirname(__file__), "logs", "deransom.log")
 ACTIVITY_LOG_FILE = os.path.join(os.path.dirname(__file__), "logs", "activity_log.json")
 
-# Ensure log directory exists
+# User database settings
+USER_DB_FILE = os.path.join(os.path.dirname(__file__), "data", "users.json")
+
+# Session settings
+SESSION_TYPE = "filesystem"
+SESSION_PERMANENT = True
+SESSION_USE_SIGNER = True
+SESSION_FILE_DIR = os.path.join(os.path.dirname(__file__), "data", "sessions")
+PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
+
+# Notification settings
+ENABLE_EMAIL_NOTIFICATIONS = os.getenv("ENABLE_EMAIL_NOTIFICATIONS", "False").lower() in ("true", "1", "t")
+SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+NOTIFICATION_FROM_EMAIL = os.getenv("NOTIFICATION_FROM_EMAIL", "deransom@example.com")
+
+# Ensure directories exist
 os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+os.makedirs(os.path.dirname(USER_DB_FILE), exist_ok=True)
+os.makedirs(SESSION_FILE_DIR, exist_ok=True)
 
 # Function to validate configuration
 def validate_config():

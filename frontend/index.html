@@ -3,86 +3,743 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>De-Ransom: Decentralized Ransomware Protection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>De-Ransom - Ransomware Protection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0044cc;
+            --secondary: #ff0033;
+            --secondary-dark: #cc0033;
+            --success: #00cc66;
+            --warning: #ffcc00;
+            --danger: #ff0033;
+            --dark: #0a0e17;
+            --card-bg: #141c2c;
+            --text-color: #e0e0e0;
+            --text-muted: #8a9ab0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+        
+        a:hover {
+            color: var(--secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--secondary), var(--secondary-dark));
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(20, 28, 44, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(0, 102, 255, 0.1), transparent 70%),
+                        radial-gradient(circle at bottom left, rgba(255, 0, 51, 0.1), transparent 70%);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50%;
+            max-width: 600px;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        /* Features Section */
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 30px;
+        }
+        
+        .feature-icon.blue {
+            background-color: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .feature-icon.red {
+            background-color: rgba(255, 0, 51, 0.1);
+            color: var(--secondary);
+        }
+        
+        .feature-icon.green {
+            background-color: rgba(0, 204, 102, 0.1);
+            color: var(--success);
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            background-color: rgba(20, 28, 44, 0.5);
+            border-radius: 8px;
+            padding: 50px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .step h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .step p {
+            color: var(--text-muted);
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(45deg, rgba(0, 102, 255, 0.1), rgba(255, 0, 51, 0.1));
+            border-radius: 8px;
+            padding: 60px;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: var(--text-muted);
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        /* Binary Background */
+        .binary-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.03;
+            overflow: hidden;
+        }
+        
+        .binary-column {
+            position: absolute;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--primary);
+            white-space: nowrap;
+            animation: binary-fall linear infinite;
+        }
+        
+        @keyframes binary-fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-image {
+                opacity: 0.3;
+            }
+            
+            .hero-content {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+            
+            nav ul {
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 15px;
+            }
+            
+            .auth-buttons {
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 36px;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .how-it-works {
+                padding: 30px;
+            }
+            
+            .cta {
+                padding: 40px 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Binary Background -->
+    <div class="binary-background" id="binary-background"></div>
+    
+    <!-- Header -->
+    <header>
         <div class="container">
-            <a class="navbar-brand" href="#">De-Ransom</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dashboard.html">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Login</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-8 offset-md-2 text-center">
-                <h1 class="display-4">De-Ransom</h1>
-                <p class="lead">A Decentralized Ransomware Detection & Response System</p>
-                <hr class="my-4">
-                <p>Protect your files with blockchain-powered security and decentralized backups.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                    <a href="dashboard.html" class="btn btn-primary btn-lg px-4 me-md-2">View Dashboard</a>
-                    <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-virus"></i>
+                    <h1>De-Ransom</h1>
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-primary">Login</a>
+                    <a href="register.html" class="btn btn-secondary">Register</a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container my-5" id="features">
-        <h2 class="text-center mb-4">How It Works</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Real-time Detection</h5>
-                        <p class="card-text">Our system monitors file changes in real-time to detect suspicious encryption patterns typical of ransomware attacks.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Decentralized Backups</h5>
-                        <p class="card-text">Critical files are automatically backed up to IPFS via Filebase, ensuring they remain accessible even if local copies are compromised.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Blockchain Verification</h5>
-                        <p class="card-text">All security events are logged to the Ethereum blockchain, creating an immutable record of file activity and potential threats.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <p class="mb-0">© 2023 De-Ransom | 24-Hour Hackathon Project</p>
+            <div class="hero-content">
+                <h2>Protect Your Files from Ransomware Attacks</h2>
+                <p>De-Ransom provides real-time monitoring and blockchain-backed protection against ransomware threats. Keep your valuable data safe with our advanced security solution.</p>
+                <div class="hero-buttons">
+                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                    <a href="#how-it-works" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            
+            <img src="https://cdn.pixabay.com/photo/2017/01/12/10/40/hacker-1974197_1280.png" alt="Cybersecurity" class="hero-image">
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Advanced Protection Features</h2>
+                <p>Our comprehensive security solution offers multiple layers of protection against ransomware attacks.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Real-time Monitoring</h3>
+                    <p>Continuously monitors your files and directories for suspicious activities that may indicate ransomware attacks.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon red">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Instant Alerts</h3>
+                    <p>Receive immediate notifications when potential ransomware activity is detected, allowing for quick response.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Secure Backups</h3>
+                    <p>Automatically backs up your critical files to decentralized storage (IPFS) when suspicious activity is detected.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3>Blockchain Verification</h3>
+                    <p>Uses blockchain technology to create immutable records of security events and file backups.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon red">
+                        <i class="fas fa-file-import"></i>
+                    </div>
+                    <h3>Easy Recovery</h3>
+                    <p>Quickly restore your files from secure backups if they are encrypted or damaged by ransomware.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Gain insights into security threats with detailed analytics and reporting on detected activities.</p>
+                    <a href="#" class="learn-more">Learn More &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How De-Ransom Works</h2>
+                <p>Our multi-layered approach provides comprehensive protection against ransomware threats.</p>
+            </div>
+            
+            <div class="how-it-works">
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Install & Configure</h3>
+                        <p>Set up De-Ransom and select the directories you want to protect from ransomware attacks.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Continuous Monitoring</h3>
+                        <p>Our system constantly monitors your files for suspicious activities and behavior patterns.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Threat Detection</h3>
+                        <p>When potential ransomware activity is detected, the system immediately identifies the threat.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Secure Backup</h3>
+                        <p>Critical files are automatically backed up to decentralized storage before they can be encrypted.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <h3>Blockchain Logging</h3>
+                        <p>Security events and backup information are recorded on the blockchain for verification.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">6</div>
+                        <h3>Easy Recovery</h3>
+                        <p>If files are compromised, quickly restore them from your secure backups with a few clicks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="container">
+            <div class="cta">
+                <h2>Protect Your Data Today</h2>
+                <p>Don't wait until it's too late. Ransomware attacks are increasing every day. Secure your valuable files now with De-Ransom's advanced protection.</p>
+                <a href="register.html" class="btn btn-primary">Get Started Now</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>De-Ransom</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">GDPR</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 De-Ransom. All rights reserved.</p>
+            </div>
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/js/websocket.js"></script>
-    <script src="script.js"></script>
+    
+    <script>
+        // Create binary background effect
+        function createBinaryBackground() {
+            const container = document.getElementById('binary-background');
+            const screenWidth = window.innerWidth;
+            
+            for (let i = 0; i < 20; i++) {
+                const column = document.createElement('div');
+                column.className = 'binary-column';
+                column.style.left = `${Math.random() * screenWidth}px`;
+                column.style.animationDuration = `${15 + Math.random() * 10}s`;
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                
+                let binaryString = '';
+                for (let j = 0; j < 100; j++) {
+                    binaryString += Math.round(Math.random());
+                }
+                
+                column.textContent = binaryString;
+                container.appendChild(column);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createBinaryBackground();
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

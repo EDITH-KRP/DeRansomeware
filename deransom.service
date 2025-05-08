@@ -1,0 +1,15 @@
+[Unit]
+Description=De-Ransom Ransomware Detection Service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/DeRansomeware  # Replace with actual path
+ExecStart=/path/to/DeRansomeware/venv/bin/python /path/to/DeRansomeware/production.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

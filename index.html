@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>De-Ransom Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        ul {
+            background-color: #f8f9fa;
+            padding: 15px 15px 15px 40px;
+            border-radius: 5px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .test-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .test-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>De-Ransom Test Page</h1>
+    
+    <div class="status success">
+        <strong>Server Status:</strong> If you can see this page, the basic HTTP server is working!
+    </div>
+    
+    <p>This is a test page to check if the server is working. The links below will help you navigate to the main application pages:</p>
+    
+    <ul>
+        <li><a href="frontend/index.html">Frontend Index</a> - The main application page</li>
+        <li><a href="frontend/dashboard.html">Dashboard</a> - The monitoring dashboard</li>
+        <li><a href="frontend/login.html">Login</a> - The login page</li>
+    </ul>
+    
+    <h2>Troubleshooting</h2>
+    <p>If you're having issues with the main application, try these steps:</p>
+    <ol>
+        <li>Make sure all dependencies are installed by running <code>install_dependencies.bat</code></li>
+        <li>Check that your <code>.env</code> file has all required values</li>
+        <li>Try running the simple server with <code>python simple_server.py</code></li>
+        <li>For Windows production mode, use <code>run_windows_production.bat</code></li>
+    </ol>
+    
+    <button class="test-button" onclick="testConnection()">Test Server Connection</button>
+    <div id="connection-result"></div>
+    
+    <script>
+        function testConnection() {
+            const resultDiv = document.getElementById('connection-result');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            // Simple test to see if we can access the current page
+            fetch(window.location.href)
+                .then(response => {
+                    if (response.ok) {
+                        resultDiv.innerHTML = '<div class="status success"><strong>Success!</strong> Basic HTTP connection is working.</div>';
+                    } else {
+                        resultDiv.innerHTML = '<div class="status error"><strong>Error:</strong> Received status code ' + response.status + '</div>';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = '<div class="status error"><strong>Error:</strong> ' + error.message + '</div>';
+                });
+        }
+    </script>
+</body>
+</html>

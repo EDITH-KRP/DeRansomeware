@@ -1,0 +1,22 @@
+flask==2.2.3
+flask-cors==3.0.10
+python-dotenv==1.0.0
+requests==2.28.2
+websockets==10.4
+watchdog==2.3.1
+boto3==1.26.135
+
+# Web3 dependencies with binary alternatives
+web3==6.0.0
+cytoolz==0.12.1
+eth-hash[pycryptodome]
+eth-keyfile==0.6.1
+
+# Use a pure Python alternative to lru-dict
+cachetools==5.3.1
+
+# Windows production server
+waitress>=2.1.2
+
+# Remove gunicorn as it's not compatible with Windows
+# gunicorn==20.1.0

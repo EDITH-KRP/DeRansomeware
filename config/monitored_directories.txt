@@ -1,0 +1,9 @@
+# De-Ransom Monitored Directories Configuration
+# Add one directory path per line to monitor for ransomware activity
+# Lines starting with # are comments and will be ignored
+# Example:
+# C:\Users\username\Documents
+# C:\Users\username\Pictures
+# /home/username/Documents
+
+# Add your directories below:

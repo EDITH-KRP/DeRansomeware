@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De-Ransom - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #0a0e17;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 128, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 20%);
+        }
+        
+        .register-container {
+            background-color: #141c2c;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 
+                        0 0 40px rgba(0, 128, 255, 0.1),
+                        0 0 60px rgba(255, 0, 0, 0.1);
+            width: 400px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #0066ff, transparent, #ff0033);
+            z-index: -1;
+            border-radius: 10px;
+            animation: border-animation 10s linear infinite;
+        }
+        
+        @keyframes border-animation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo i {
+            font-size: 60px;
+            color: #0066ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 102, 255, 0.7);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1e2738;
+            color: #ffffff;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0066ff;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #5a6a8a;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #0066ff, #0044cc);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #0044cc, #0033aa);
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+        }
+        
+        .links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .links a {
+            color: #0066ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .links a:hover {
+            color: #ff0033;
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background-color: rgba(255, 0, 51, 0.1);
+            border: 1px solid #ff0033;
+            color: #ff0033;
+        }
+        
+        .alert-success {
+            background-color: rgba(0, 204, 102, 0.1);
+            border: 1px solid #00cc66;
+            color: #00cc66;
+        }
+        
+        .security-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 102, 255, 0.1);
+            border: 1px solid #0066ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .security-badge i {
+            color: #0066ff;
+            font-size: 20px;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background-color: #1e2738;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-strength-text {
+            text-align: left;
+            font-size: 12px;
+            margin-top: 5px;
+            color: #5a6a8a;
+        }
+        
+        .binary-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .binary-text {
+            position: absolute;
+            font-family: monospace;
+            font-size: 14px;
+            color: #0066ff;
+            white-space: nowrap;
+            animation: binary-fall 20s linear infinite;
+        }
+        
+        @keyframes binary-fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <div class="binary-background" id="binary-background"></div>
+    
+    <div class="register-container">
+        <div class="security-badge">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        
+        <div class="logo">
+            <i class="fas fa-user-shield"></i>
+            <h1>Create Account</h1>
+        </div>
+        
+        <div class="alert alert-danger" id="error-alert"></div>
+        <div class="alert alert-success" id="success-alert"></div>
+        
+        <form id="register-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="password" id="password" placeholder="Password" required>
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="password-strength-bar"></div>
+                </div>
+                <div class="password-strength-text" id="password-strength-text">Password strength</div>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-check-circle"></i>
+                <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+            </div>
+            
+            <button type="submit">CREATE SECURE ACCOUNT</button>
+        </form>
+        
+        <div class="links">
+            <a href="login.html">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Create binary background effect
+        function createBinaryBackground() {
+            const container = document.getElementById('binary-background');
+            const screenWidth = window.innerWidth;
+            
+            for (let i = 0; i < 20; i++) {
+                const column = document.createElement('div');
+                column.className = 'binary-text';
+                column.style.left = `${Math.random() * screenWidth}px`;
+                column.style.animationDuration = `${15 + Math.random() * 10}s`;
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                
+                let binaryString = '';
+                for (let j = 0; j < 100; j++) {
+                    binaryString += Math.round(Math.random());
+                }
+                
+                column.textContent = binaryString;
+                container.appendChild(column);
+            }
+        }
+        
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('password-strength-bar');
+            const strengthText = document.getElementById('password-strength-text');
+            
+            // Calculate password strength
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength += 25;
+            
+            // Contains lowercase
+            if (/[a-z]/.test(password)) strength += 25;
+            
+            // Contains uppercase
+            if (/[A-Z]/.test(password)) strength += 25;
+            
+            // Contains number or special char
+            if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
+            
+            // Update strength bar
+            strengthBar.style.width = `${strength}%`;
+            
+            // Update color and text
+            if (strength < 25) {
+                strengthBar.style.backgroundColor = '#ff0033';
+                strengthText.textContent = 'Very weak';
+                strengthText.style.color = '#ff0033';
+            } else if (strength < 50) {
+                strengthBar.style.backgroundColor = '#ff6600';
+                strengthText.textContent = 'Weak';
+                strengthText.style.color = '#ff6600';
+            } else if (strength < 75) {
+                strengthBar.style.backgroundColor = '#ffcc00';
+                strengthText.textContent = 'Medium';
+                strengthText.style.color = '#ffcc00';
+            } else {
+                strengthBar.style.backgroundColor = '#00cc66';
+                strengthText.textContent = 'Strong';
+                strengthText.style.color = '#00cc66';
+            }
+        });
+        
+        // Handle registration form submission
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            const errorAlert = document.getElementById('error-alert');
+            const successAlert = document.getElementById('success-alert');
+            
+            // Reset alerts
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorAlert.textContent = 'Passwords do not match';
+                errorAlert.style.display = 'block';
+                return;
+            }
+            
+            try {
+                // Display form data for debugging
+                const formData = { username, email, password: '***' };
+                console.log('Form data:', formData);
+                
+                // Use XMLHttpRequest for better error reporting
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://localhost:5000/api/auth/register', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.withCredentials = true;
+                
+                xhr.onreadystatechange = function() {
+                    console.log('XHR state:', xhr.readyState, 'status:', xhr.status);
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            // Success
+                            const data = JSON.parse(xhr.responseText);
+                            console.log('Registration successful:', data);
+                            
+                            // Registration successful
+                            successAlert.textContent = 'Account created successfully! Redirecting to login...';
+                            successAlert.style.display = 'block';
+                            
+                            // Redirect to login page after a delay
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 2000);
+                        } else {
+                            // Error
+                            console.error('Registration failed:', xhr.status, xhr.statusText);
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                errorAlert.textContent = data.error || 'Registration failed';
+                            } catch (e) {
+                                errorAlert.textContent = `Registration failed: ${xhr.status} ${xhr.statusText}`;
+                            }
+                            errorAlert.style.display = 'block';
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    console.error('XHR error:', xhr.statusText);
+                    errorAlert.textContent = 'Network error. Please try again.';
+                    errorAlert.style.display = 'block';
+                };
+                
+                // Send the request
+                console.log('Sending registration request...');
+                xhr.send(JSON.stringify({ username, email, password }));
+                
+                // Skip the rest of the original code
+                return;
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Registration successful
+                    successAlert.textContent = 'Account created successfully! Redirecting to login...';
+                    successAlert.style.display = 'block';
+                    
+                    // Redirect to login page after a delay
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    // Registration failed
+                    errorAlert.textContent = data.error || 'Registration failed';
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorAlert.textContent = 'Network error. Please try again.';
+                errorAlert.style.display = 'block';
+            }
+        });
+        
+        // Initialize
+        createBinaryBackground();
+    </script>
+</body>
+</html>

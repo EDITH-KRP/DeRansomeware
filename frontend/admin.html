@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De-Ransom - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-shield-virus"></i>
+                <h2>De-Ransom</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#monitoring" data-section="monitoring">
+                            <i class="fas fa-eye"></i>
+                            <span>Monitoring</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#alerts" data-section="alerts">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Alerts</span>
+                            <span class="badge" id="alerts-badge">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#backups" data-section="backups">
+                            <i class="fas fa-database"></i>
+                            <span>Backups</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#blockchain" data-section="blockchain">
+                            <i class="fas fa-link"></i>
+                            <span>Blockchain</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#users" data-section="users">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button id="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    
+                    <div class="notifications">
+                        <button id="notifications-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge" id="notifications-badge">0</span>
+                        </button>
+                        
+                        <div class="notifications-dropdown">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button id="mark-all-read">Mark all as read</button>
+                            </div>
+                            
+                            <div class="notifications-list" id="notifications-list">
+                                <!-- Notifications will be added here dynamically -->
+                            </div>
+                            
+                            <div class="notifications-footer">
+                                <a href="#alerts">View all alerts</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <button id="profile-btn">
+                            <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Profile">
+                            <span id="username">Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        
+                        <div class="profile-dropdown">
+                            <a href="#profile">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="#settings">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a href="#" id="logout-dropdown-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="dashboard-header">
+                    <h3>System Overview</h3>
+                    <div class="date-time" id="current-datetime">Loading...</div>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-card-icon high-risk">
+                            <i class="fas fa-virus-slash"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>High Risk Events</h4>
+                            <div class="stat-value" id="high-risk-count">0</div>
+                            <div class="stat-change increase">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0% from last week</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon medium-risk">
+                            <i class="fas fa-file-shield"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Protected Files</h4>
+                            <div class="stat-value" id="protected-files-count">0</div>
+                            <div class="stat-change increase">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0% from last week</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon low-risk">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Monitored Directories</h4>
+                            <div class="stat-value" id="monitored-dirs-count">0</div>
+                            <div class="stat-change no-change">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon info">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Active Users</h4>
+                            <div class="stat-value" id="active-users-count">0</div>
+                            <div class="stat-change increase">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0% from last week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-row">
+                    <div class="dashboard-card wide">
+                        <div class="card-header">
+                            <h3>Threat Activity</h3>
+                            <div class="card-actions">
+                                <button class="btn-outline" id="refresh-chart">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <select id="chart-timeframe">
+                                    <option value="day">Last 24 Hours</option>
+                                    <option value="week" selected>Last 7 Days</option>
+                                    <option value="month">Last 30 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="threat-activity-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-row">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Recent Alerts</h3>
+                            <a href="#alerts" class="view-all">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="recent-alerts-list" id="recent-alerts-list">
+                                <!-- Recent alerts will be added here dynamically -->
+                                <div class="empty-state">
+                                    <i class="fas fa-shield-check"></i>
+                                    <p>No recent alerts</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Blockchain Status</h3>
+                            <button class="btn-outline" id="refresh-blockchain">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="blockchain-status" id="blockchain-status">
+                                <div class="status-item">
+                                    <span class="status-label">Connection:</span>
+                                    <span class="status-value" id="blockchain-connection">
+                                        <i class="fas fa-circle-notch fa-spin"></i> Checking...
+                                    </span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Network:</span>
+                                    <span class="status-value" id="blockchain-network">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Block Number:</span>
+                                    <span class="status-value" id="blockchain-block">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Events Logged:</span>
+                                    <span class="status-value" id="blockchain-events">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Mode:</span>
+                                    <span class="status-value" id="blockchain-mode">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Other sections will be added dynamically via JavaScript -->
+            
+        </main>
+    </div>
+    
+    <!-- Alert Modal -->
+    <div class="modal" id="alert-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ransomware Alert</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-details">
+                    <div class="alert-icon high-risk">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <div class="alert-info">
+                        <h4 id="alert-title">Suspicious Activity Detected</h4>
+                        <p id="alert-message">A potential ransomware activity has been detected.</p>
+                        <div class="alert-metadata">
+                            <div class="metadata-item">
+                                <span class="metadata-label">File:</span>
+                                <span class="metadata-value" id="alert-file">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Event Type:</span>
+                                <span class="metadata-value" id="alert-type">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Risk Level:</span>
+                                <span class="metadata-value" id="alert-risk">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Time:</span>
+                                <span class="metadata-value" id="alert-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary close-modal">Dismiss</button>
+                <button class="btn-primary" id="view-alert-details">View Details</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="admin.js"></script>
+</body>
+</html>

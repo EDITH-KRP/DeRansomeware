@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De-Ransom - Client Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+        /* Client-specific styles */
+        body {
+            --primary: #00cc66;
+            --primary-dark: #00aa55;
+        }
+        
+        .client-theme .sidebar-header i,
+        .client-theme .sidebar-nav ul li.active a {
+            color: var(--primary);
+        }
+        
+        .client-theme .sidebar-nav ul li.active a {
+            background-color: rgba(0, 204, 102, 0.1);
+            border-left-color: var(--primary);
+        }
+        
+        .client-theme .sidebar-nav ul li a:hover {
+            border-left-color: var(--primary);
+        }
+        
+        .client-theme .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        }
+        
+        .client-theme .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 204, 102, 0.5);
+        }
+        
+        .directory-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .directory-card:hover {
+            background-color: var(--card-bg-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .directory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .directory-path {
+            font-family: monospace;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        
+        .directory-status {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-active {
+            background-color: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+        
+        .status-inactive {
+            background-color: var(--text-muted);
+        }
+        
+        .directory-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .file-restore-form {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .backup-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .backup-item:hover {
+            background-color: var(--card-bg-hover);
+        }
+        
+        .backup-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .backup-content {
+            flex: 1;
+        }
+        
+        .backup-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .backup-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .backup-actions {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body class="client-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2>De-Ransom</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#monitoring" data-section="monitoring">
+                            <i class="fas fa-eye"></i>
+                            <span>Monitoring</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#alerts" data-section="alerts">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Alerts</span>
+                            <span class="badge" id="alerts-badge">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#backups" data-section="backups">
+                            <i class="fas fa-database"></i>
+                            <span>Backups</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button id="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+                
+                <div class="top-bar-right">
+                    <div class="notifications">
+                        <button id="notifications-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge" id="notifications-badge">0</span>
+                        </button>
+                        
+                        <div class="notifications-dropdown">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button id="mark-all-read">Mark all as read</button>
+                            </div>
+                            
+                            <div class="notifications-list" id="notifications-list">
+                                <!-- Notifications will be added here dynamically -->
+                            </div>
+                            
+                            <div class="notifications-footer">
+                                <a href="#alerts">View all alerts</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <button id="profile-btn">
+                            <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Profile">
+                            <span id="username">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        
+                        <div class="profile-dropdown">
+                            <a href="#profile">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="#settings">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a href="#" id="logout-dropdown-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="dashboard-header">
+                    <h3>Protection Status</h3>
+                    <div class="date-time" id="current-datetime">Loading...</div>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-card-icon low-risk">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Protection Status</h4>
+                            <div class="stat-value" id="protection-status">Active</div>
+                            <div class="stat-change no-change">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Your files are protected</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon medium-risk">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Monitored Directories</h4>
+                            <div class="stat-value" id="monitored-dirs-count">0</div>
+                            <div class="stat-change no-change">
+                                <i class="fas fa-minus"></i>
+                                <span>Directories being watched</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon info">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Protected Files</h4>
+                            <div class="stat-value" id="protected-files-count">0</div>
+                            <div class="stat-change increase">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>Files backed up</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon high-risk">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h4>Security Alerts</h4>
+                            <div class="stat-value" id="alerts-count">0</div>
+                            <div class="stat-change no-change">
+                                <i class="fas fa-minus"></i>
+                                <span>No new alerts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-row">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Recent Alerts</h3>
+                            <a href="#alerts" class="view-all">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="recent-alerts-list" id="recent-alerts-list">
+                                <!-- Recent alerts will be added here dynamically -->
+                                <div class="empty-state">
+                                    <i class="fas fa-shield-check"></i>
+                                    <p>No recent alerts</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions">
+                                <button class="btn-primary" id="add-directory-btn">
+                                    <i class="fas fa-folder-plus"></i>
+                                    Add Directory to Monitor
+                                </button>
+                                <p class="mt-3">Add a directory to be monitored for ransomware activity.</p>
+                                
+                                <hr class="my-4">
+                                
+                                <button class="btn-primary" id="restore-file-btn">
+                                    <i class="fas fa-file-import"></i>
+                                    Restore Backed Up File
+                                </button>
+                                <p class="mt-3">Restore a file from your secure backups.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Monitoring Section -->
+            <section id="monitoring-section" class="content-section">
+                <div class="section-header">
+                    <h3>Directory Monitoring</h3>
+                    <button class="btn-primary" id="add-directory-btn-2">
+                        <i class="fas fa-folder-plus"></i>
+                        Add Directory
+                    </button>
+                </div>
+                
+                <div class="directory-list" id="directory-list">
+                    <!-- Directory cards will be added here dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>No directories being monitored</p>
+                        <button class="btn-primary mt-3" id="add-directory-btn-3">
+                            Add Directory
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Alerts Section -->
+            <section id="alerts-section" class="content-section">
+                <div class="section-header">
+                    <h3>Security Alerts</h3>
+                    <div class="section-actions">
+                        <select id="alert-filter">
+                            <option value="all">All Alerts</option>
+                            <option value="high">High Risk</option>
+                            <option value="medium">Medium Risk</option>
+                            <option value="low">Low Risk</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="alerts-list" id="alerts-list">
+                    <!-- Alerts will be added here dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-shield-check"></i>
+                        <p>No security alerts</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Backups Section -->
+            <section id="backups-section" class="content-section">
+                <div class="section-header">
+                    <h3>File Backups</h3>
+                    <button class="btn-primary" id="restore-file-btn-2">
+                        <i class="fas fa-file-import"></i>
+                        Restore File
+                    </button>
+                </div>
+                
+                <div class="file-restore-form" id="restore-form" style="display: none;">
+                    <h4>Restore File from Backup</h4>
+                    <form id="restore-file-form">
+                        <div class="form-group">
+                            <label for="ipfs-hash">IPFS Hash</label>
+                            <input type="text" id="ipfs-hash" placeholder="Enter the IPFS hash of the backup" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="output-path">Restore Location</label>
+                            <input type="text" id="output-path" placeholder="Enter the path where the file should be restored" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancel-restore">Cancel</button>
+                            <button type="submit" class="btn-primary">Restore File</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Backup History</h3>
+                        <div class="card-actions">
+                            <select id="backup-filter">
+                                <option value="all">All Backups</option>
+                                <option value="high">High Risk</option>
+                                <option value="medium">Medium Risk</option>
+                                <option value="low">Low Risk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="backups-list" id="backups-list">
+                            <!-- Backups will be added here dynamically -->
+                            <div class="empty-state">
+                                <i class="fas fa-database"></i>
+                                <p>No file backups available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section">
+                <div class="section-header">
+                    <h3>Notification Settings</h3>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Alert Preferences</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="notification-settings-form">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="email-alerts" checked>
+                                    Email Alerts
+                                </label>
+                                <p class="form-help">Receive email notifications for security alerts</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="browser-alerts" checked>
+                                    Browser Notifications
+                                </label>
+                                <p class="form-help">Receive browser notifications for security alerts</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Alert Levels</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" name="alert-levels" value="high" checked>
+                                        High Risk
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="alert-levels" value="medium" checked>
+                                        Medium Risk
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="alert-levels" value="low">
+                                        Low Risk
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notification-email">Notification Email</label>
+                                <input type="email" id="notification-email" placeholder="Enter your email address">
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Settings</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="section-header mt-4">
+                    <h3>Account Settings</h3>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Change Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="change-password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" placeholder="Enter your current password" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" placeholder="Enter your new password" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" placeholder="Confirm your new password" required>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Directory Modal -->
+    <div class="modal" id="directory-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Directory to Monitor</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-directory-form">
+                    <div class="form-group">
+                        <label for="directory-path">Directory Path</label>
+                        <input type="text" id="directory-path" placeholder="Enter the full path to the directory" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary close-modal">Cancel</button>
+                <button class="btn-primary" id="submit-directory">Add Directory</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert Modal -->
+    <div class="modal" id="alert-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ransomware Alert</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-details">
+                    <div class="alert-icon high-risk">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <div class="alert-info">
+                        <h4 id="alert-title">Suspicious Activity Detected</h4>
+                        <p id="alert-message">A potential ransomware activity has been detected.</p>
+                        <div class="alert-metadata">
+                            <div class="metadata-item">
+                                <span class="metadata-label">File:</span>
+                                <span class="metadata-value" id="alert-file">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Event Type:</span>
+                                <span class="metadata-value" id="alert-type">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Risk Level:</span>
+                                <span class="metadata-value" id="alert-risk">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Time:</span>
+                                <span class="metadata-value" id="alert-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary close-modal">Dismiss</button>
+                <button class="btn-primary" id="view-backup">View Backup</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="client.js"></script>
+</body>
+</html>

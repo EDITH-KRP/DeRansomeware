@@ -66,6 +66,14 @@ For a quick demonstration without installing dependencies:
 
 ### Running the Application
 
+#### Using the Batch File (Windows)
+
+1. Simply double-click the `run_deransomeware.bat` file
+2. The application will start and automatically open in your default browser
+3. To stop the application, close the command prompt window that opens
+
+#### Manual Start
+
 1. Start the backend server:
    ```
    python run.py
@@ -85,6 +93,16 @@ For a quick demonstration without installing dependencies:
 3. **Blockchain Logging**: High-risk events are logged to the Ethereum blockchain, creating an immutable record.
 
 4. **Alert**: The user is notified through the dashboard with details about the event, risk level, and backup location.
+
+### Blockchain Simulation Mode
+
+If you don't have blockchain credentials or don't want to use real blockchain transactions, the application will automatically fall back to simulation mode. In this mode:
+
+- Blockchain events are simulated with random transaction hashes
+- No actual blockchain transactions are sent
+- All other functionality works normally
+
+To force the application to use real blockchain transactions, set `allow_fallback=False` in the BlockchainLogger initialization.
 
 ## Security Considerations
 

@@ -4,86 +4,423 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | De-Ransom</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0044cc;
+            --secondary: #ff0033;
+            --secondary-dark: #cc0033;
+            --success: #00cc66;
+            --warning: #ffcc00;
+            --danger: #ff0033;
+            --dark: #0a0e17;
+            --card-bg: #141c2c;
+            --text-color: #e0e0e0;
+            --text-muted: #8a9ab0;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            backdrop-filter: blur(10px);
+            background-color: rgba(10, 14, 23, 0.8) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00cc66, #00aa55);
+            border: none;
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 0 15px rgba(0, 204, 102, 0.5);
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #00cc66, #00aa55);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, var(--secondary), var(--secondary-dark));
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, var(--secondary), var(--secondary-dark));
+        }
+        
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0;
+        }
+        
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-badge i {
+            font-size: 0.8rem;
+        }
+        
+        .table {
+            color: var(--text-color);
+        }
+        
+        .table thead th {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        
+        .table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .risk-high {
+            border-left: 4px solid var(--danger) !important;
+        }
+        
+        .risk-medium {
+            border-left: 4px solid var(--warning) !important;
+        }
+        
+        .risk-low {
+            border-left: 4px solid var(--success) !important;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--text-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 102, 255, 0.25);
+        }
+        
+        .blockchain-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .blockchain-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        footer {
+            background-color: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .ipfs-link, .tx-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .ipfs-link:hover, .tx-link:hover {
+            color: var(--secondary);
+        }
+        
+        .directory-path {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">De-Ransom</a>
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock-fill"></i>
+                De-Ransom
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
+                        <a class="nav-link" href="../frontend/index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="dashboard.html">Dashboard</a>
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">Login</a>
+                        <a class="nav-link" href="../frontend/login.html">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>Security Dashboard</h1>
-                    <div>
-                        <button id="startMonitoring" class="btn btn-success">
-                            <i class="bi bi-play-fill"></i> Start Monitoring
-                        </button>
-                        <button id="stopMonitoring" class="btn btn-danger" disabled>
-                            <i class="bi bi-stop-fill"></i> Stop Monitoring
-                        </button>
+    <div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="mb-0"><i class="bi bi-shield-check text-primary me-2"></i>Security Dashboard</h1>
+                <p class="text-muted">Real-time ransomware detection and blockchain protection</p>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <div class="d-flex gap-2">
+                    <button id="startMonitoring" class="btn btn-success">
+                        <i class="bi bi-play-fill"></i> Start Monitoring
+                    </button>
+                    <button id="stopMonitoring" class="btn btn-danger" disabled>
+                        <i class="bi bi-stop-fill"></i> Stop
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body stat-card">
+                        <span class="stat-label">Monitoring Status</span>
+                        <div class="d-flex align-items-center mt-2">
+                            <span id="monitoringStatus" class="status-badge bg-secondary">
+                                <i class="bi bi-circle-fill pulse"></i> Inactive
+                            </span>
+                        </div>
+                        <div class="mt-3">
+                            <span class="stat-label">Directory</span>
+                            <div class="directory-path mt-2">
+                                <span id="monitoredDirectory">Not selected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body stat-card">
+                        <span class="stat-label">Files Monitored</span>
+                        <p class="stat-value" id="totalFiles">0</p>
+                        <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body stat-card">
+                        <span class="stat-label">Suspicious Events</span>
+                        <p class="stat-value" id="suspiciousEvents">0</p>
+                        <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body stat-card">
+                        <span class="stat-label">Blockchain Events</span>
+                        <p class="stat-value" id="eventsLogged">0</p>
+                        <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.1);">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Monitoring Status</h5>
-                        <p class="card-text">
-                            <span id="monitoringStatus" class="badge bg-secondary">Inactive</span>
-                        </p>
-                        <p>Directory: <span id="monitoredDirectory">Not selected</span></p>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-link-45deg me-2"></i>Blockchain Status</h5>
+                        <span class="badge bg-primary">Live</span>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">File Activity</h5>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <p class="mb-1">Total Files Monitored:</p>
-                                <h3 id="totalFiles">0</h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="blockchain-info">
+                                    <div class="blockchain-icon">
+                                        <i class="bi bi-hdd-network"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 text-muted">Network</p>
+                                        <p class="mb-0 fw-bold" id="networkStatus">Sepolia Testnet</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <p class="mb-1">Suspicious Events:</p>
-                                <h3 id="suspiciousEvents">0</h3>
+                            <div class="col-md-4">
+                                <div class="blockchain-info">
+                                    <div class="blockchain-icon">
+                                        <i class="bi bi-boxes"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 text-muted">Latest Block</p>
+                                        <p class="mb-0 fw-bold" id="lastBlock">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="blockchain-info">
+                                    <div class="blockchain-icon">
+                                        <i class="bi bi-file-earmark-lock"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 text-muted">Contract Address</p>
+                                        <p class="mb-0 fw-bold">0x5453...5605</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Blockchain Status</h5>
-                        <p class="mb-1">Network: <span id="networkStatus">Sepolia Testnet</span></p>
-                        <p class="mb-1">Last Block: <span id="lastBlock">-</span></p>
-                        <p class="mb-0">Events Logged: <span id="eventsLogged">0</span></p>
                     </div>
                 </div>
             </div>
@@ -92,20 +429,25 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Recent Activity</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-activity me-2"></i>Security Activity Log</h5>
+                        <div>
+                            <span class="badge bg-danger me-1">High Risk</span>
+                            <span class="badge bg-warning me-1">Medium Risk</span>
+                            <span class="badge bg-success">Low Risk</span>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Timestamp</th>
-                                        <th>File</th>
-                                        <th>Event Type</th>
-                                        <th>Risk Level</th>
-                                        <th>IPFS Backup</th>
-                                        <th>Blockchain TX</th>
+                                        <th>TIMESTAMP</th>
+                                        <th>FILE</th>
+                                        <th>EVENT TYPE</th>
+                                        <th>RISK LEVEL</th>
+                                        <th>IPFS BACKUP</th>
+                                        <th>BLOCKCHAIN TX</th>
                                     </tr>
                                 </thead>
                                 <tbody id="activityLog">
@@ -124,30 +466,45 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Select Directory to Monitor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title"><i class="bi bi-folder me-2"></i>Select Directory to Monitor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="directoryPath" class="form-label">Directory Path</label>
-                        <input type="text" class="form-control" id="directoryPath" placeholder="C:\Users\Username\Documents">
+                        <div class="input-group">
+                            <span class="input-group-text" style="background-color: rgba(255,255,255,0.05); border-color: var(--border-color);">
+                                <i class="bi bi-folder2-open"></i>
+                            </span>
+                            <input type="text" class="form-control" id="directoryPath" placeholder="C:\Users\Username\Documents">
+                        </div>
+                        <small class="form-text text-muted mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            The system will monitor this directory for suspicious file operations.
+                        </small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmDirectory">Confirm</button>
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmDirectory">
+                        <i class="bi bi-check-lg me-1"></i> Start Monitoring
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+    <footer class="text-white text-center py-4 mt-5">
         <div class="container">
-            <p class="mb-0">© 2023 De-Ransom | 24-Hour Hackathon Project</p>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="mb-0">© 2025 De-Ransom | Blockchain-Powered Ransomware Protection</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/websocket.js"></script>
     <script src="script.js"></script>
     <script src="demo.js"></script>

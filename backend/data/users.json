@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@deransom.com",
+      "password_hash": "3d503a2a47b16b3025d9830b905f5d08db1fa6f63bd75e1b1d36ba4969a001e1",
+      "salt": "50228ce91fa5d09cbe7fe19e347cd09c",
+      "role": "admin",
+      "created_at": "2025-05-09T00:11:12.348271",
+      "last_login": null
+    }
+  ],
+  "next_id": 2
+}
