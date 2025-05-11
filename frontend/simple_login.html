@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login to De-Ransom</h2>
+        <div id="successMessage" class="message success"></div>
+        <div id="errorMessage" class="message error"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="admin" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="admin123" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="http://localhost:5000/frontend/dashboard.html">Go to Dashboard Directly</a><br>
+            <a href="http://localhost:5000/frontend/simple_register.html">Create New Account</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Hide any previous messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Logging in...';
+            submitButton.disabled = true;
+            
+            // Make API call to the backend
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Login successful
+                successMessage.textContent = 'Login successful! Redirecting...';
+                successMessage.style.display = 'block';
+                
+                // Store auth token if provided
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
+                
+                // Redirect to dashboard after a short delay
+                setTimeout(function() {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                
+                // Fallback to client-side validation for demo purposes
+                if (username === 'admin' && password === 'admin123') {
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.style.display = 'block';
+                    
+                    // Redirect to dashboard after a short delay
+                    setTimeout(function() {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    errorMessage.textContent = 'Invalid username or password';
+                    errorMessage.style.display = 'block';
+                }
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -19,16 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const eventsLogged = document.getElementById('eventsLogged');
     const activityLog = document.getElementById('activityLog');
     
-    // Try to get the modal elements
-    let directoryModal, confirmDirectoryBtn, directoryPathInput;
-    try {
-        directoryModal = new bootstrap.Modal(document.getElementById('directoryModal'));
-        confirmDirectoryBtn = document.getElementById('confirmDirectory');
-        directoryPathInput = document.getElementById('directoryPath');
-    } catch (e) {
-        console.log('Modal elements not found, demo will use default values');
-    }
-    
     // State
     let isMonitoring = false;
     let simulationInterval = null;
@@ -38,81 +28,76 @@ document.addEventListener('DOMContentLoaded', function() {
     let blockNumber = 12345678;
     let eventsLoggedCount = 0;
     
-    // Event listeners
-    if (startMonitoringBtn) {
-        startMonitoringBtn.addEventListener('click', function() {
-            // Get directories from API first
-            fetch('/api/directories')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.directories && data.directories.length > 0) {
-                        // Start monitoring with auto-detected directories
-                        startMonitoring(data.directories.join(', '));
-                    } else if (directoryModal) {
-                        directoryModal.show();
-                    } else {
-                        startMonitoring('System Directories');
-                    }
-                })
-                .catch(err => {
-                    console.error('Error fetching directories:', err);
-                    if (directoryModal) {
-                        directoryModal.show();
-                    } else {
-                        startMonitoring('System Directories');
-                    }
-                });
-        });
-    }
-    
-    if (stopMonitoringBtn) {
-        stopMonitoringBtn.addEventListener('click', function() {
-            stopMonitoring();
-        });
-    }
-    
-    if (confirmDirectoryBtn) {
-        confirmDirectoryBtn.addEventListener('click', function() {
-            const path = directoryPathInput.value.trim() || 'System Directories';
-            directoryModal.hide();
-            startMonitoring(path);
-        });
-    }
-    
-    // Functions
-    function startMonitoring(path) {
+    // Start monitoring function for demo mode
+    window.startMonitoringDemo = function(path) {
         isMonitoring = true;
         updateUI();
-        monitoredDirectory.textContent = path;
+        monitoredDirectory.textContent = path || 'System Directories';
         
         // Start simulation
         simulationInterval = setInterval(simulateActivity, 5000);
         
         console.log(`Started monitoring ${path} (Demo Mode)`);
-    }
+    };
     
-    function stopMonitoring() {
+    // Stop monitoring function for demo mode
+    window.stopMonitoringDemo = function() {
         isMonitoring = false;
         clearInterval(simulationInterval);
         updateUI();
         
         console.log('Stopped monitoring (Demo Mode)');
-    }
+    };
     
+    // Initialize demo data function
+    window.initializeDemoData = function() {
+        // Set initial values
+        totalFiles.textContent = fileCount;
+        suspiciousEvents.textContent = suspiciousCount;
+        eventsLogged.textContent = eventsLoggedCount;
+        lastBlock.textContent = blockNumber;
+        
+        // Add some initial events
+        const initialEvents = [
+            {
+                timestamp: new Date(Date.now() - 60000),
+                fileName: 'document1.docx',
+                filePath: 'C:\\Users\\Documents\\document1.docx',
+                eventType: 'Modified',
+                riskLevel: 'low',
+                ipfsHash: '',
+                txHash: ''
+            },
+            {
+                timestamp: new Date(Date.now() - 120000),
+                fileName: 'presentation.pptx',
+                filePath: 'C:\\Users\\Documents\\presentation.pptx',
+                eventType: 'Renamed',
+                riskLevel: 'medium',
+                ipfsHash: generateRandomHash('Qm'),
+                txHash: ''
+            }
+        ];
+        
+        initialEvents.forEach(event => addActivityLogEntry(event));
+    };
+    
+    // Update UI based on monitoring state
     function updateUI() {
         if (isMonitoring) {
-            monitoringStatus.textContent = 'Active';
-            monitoringStatus.className = 'badge bg-success';
+            monitoringStatus.innerHTML = '<i class="bi bi-circle-fill pulse"></i> Active';
+            monitoringStatus.className = 'status-badge bg-success';
             startMonitoringBtn.disabled = true;
             stopMonitoringBtn.disabled = false;
         } else {
-            monitoringStatus.textContent = 'Inactive';
-            monitoringStatus.className = 'badge bg-secondary';
+            monitoringStatus.innerHTML = '<i class="bi bi-circle-fill pulse"></i> Inactive';
+            monitoringStatus.className = 'status-badge bg-secondary';
             startMonitoringBtn.disabled = false;
             stopMonitoringBtn.disabled = true;
         }
     }
     
+    // Simulate activity for demo
     function simulateActivity() {
         // Simulate file count increasing
         fileCount += Math.floor(Math.random() * 5) + 1;
@@ -181,7 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Add activity log entry to the table
     function addActivityLogEntry(event) {
+        if (!activityLog) return;
+        
         const row = document.createElement('tr');
         
         // Add risk class to row
@@ -216,13 +204,11 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         // Add to table
-        if (activityLog) {
-            activityLog.prepend(row);
-            
-            // Limit to 20 entries for demo
-            if (activityLog.children.length > 20) {
-                activityLog.removeChild(activityLog.lastChild);
-            }
+        activityLog.prepend(row);
+        
+        // Limit to 20 entries for demo
+        if (activityLog.children.length > 20) {
+            activityLog.removeChild(activityLog.lastChild);
         }
     }
     
@@ -247,38 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initialize with some sample data
-    function initializeDemoData() {
-        // Set initial values
-        totalFiles.textContent = fileCount;
-        suspiciousEvents.textContent = suspiciousCount;
-        eventsLogged.textContent = eventsLoggedCount;
-        lastBlock.textContent = blockNumber;
-        
-        // Add some initial events
-        const initialEvents = [
-            {
-                timestamp: new Date(Date.now() - 60000),
-                fileName: 'document1.docx',
-                filePath: 'C:\\Users\\Documents\\document1.docx',
-                eventType: 'Modified',
-                riskLevel: 'low',
-                ipfsHash: '',
-                txHash: ''
-            },
-            {
-                timestamp: new Date(Date.now() - 120000),
-                fileName: 'presentation.pptx',
-                filePath: 'C:\\Users\\Documents\\presentation.pptx',
-                eventType: 'Renamed',
-                riskLevel: 'medium',
-                ipfsHash: generateRandomHash('Qm'),
-                txHash: ''
-            }
-        ];
-        
-        initialEvents.forEach(event => addActivityLogEntry(event));
+    if (totalFiles && suspiciousEvents && eventsLogged && lastBlock) {
+        window.initializeDemoData();
     }
-    
-    // Initialize demo
-    initializeDemoData();
 });

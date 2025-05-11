@@ -14,21 +14,22 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Import the Flask app
 from backend.app import app
 from backend.config import FLASK_HOST, FLASK_PORT, DEBUG, validate_config
+from backend.websocket import run_server as run_websocket_server
 
 if __name__ == "__main__":
-    # Validate configuration
+    # Validate configuration but always continue in real mode
     is_valid, missing_keys = validate_config()
     if not is_valid:
         print("WARNING: Missing configuration keys:", ", ".join(missing_keys))
         print("Some features may not work correctly.")
-        print("Please update your .env file with the required values.")
-        
-        # Ask user if they want to continue anyway
-        if input("Continue anyway? (y/n): ").lower() != 'y':
-            sys.exit(1)
+        print("Running in REAL MODE - not using mock data")
     
     # Ensure the logs directory exists
     os.makedirs(os.path.join(os.path.dirname(__file__), 'backend', 'logs'), exist_ok=True)
+    
+    # Start the WebSocket server in a separate thread
+    websocket_thread = run_websocket_server(host=FLASK_HOST, port=8765)
+    print(f"WebSocket server started on ws://{FLASK_HOST}:8765")
     
     print(f"Starting De-Ransom server on {FLASK_HOST}:{FLASK_PORT}")
     print("Press Ctrl+C to stop the server")

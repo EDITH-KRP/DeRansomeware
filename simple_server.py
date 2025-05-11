@@ -39,7 +39,11 @@ class DeRansomHandler(SimpleHTTPRequestHandler):
             self.path = '/frontend/index.html'
         elif self.path == '/dashboard':
             self.path = '/frontend/dashboard.html'
+        elif self.path == '/dashboard.html':
+            self.path = '/frontend/dashboard.html'
         elif self.path == '/login':
+            self.path = '/frontend/login.html'
+        elif self.path == '/login.html':
             self.path = '/frontend/login.html'
             
         # Serve static files
@@ -76,6 +80,31 @@ class DeRansomHandler(SimpleHTTPRequestHandler):
         elif self.path == '/api/directories':
             self.send_json_response({
                 'directories': monitored_directories
+            })
+        elif self.path == '/api/monitor/status':
+            self.send_json_response({
+                'is_monitoring': is_monitoring,
+                'directories': monitored_directories,
+                'simulation': True
+            })
+        elif self.path == '/api/dashboard/stats':
+            self.send_json_response({
+                'total_events': len(activity_log),
+                'high_risk_events': len([e for e in activity_log if e.get('risk_level') == 'high']),
+                'medium_risk_events': len([e for e in activity_log if e.get('risk_level') == 'medium']),
+                'low_risk_events': len([e for e in activity_log if e.get('risk_level') == 'low']),
+                'files_backed_up': len([e for e in activity_log if 'ipfs_hash' in e]),
+                'blockchain_records': len([e for e in activity_log if 'blockchain_tx' in e])
+            })
+        elif self.path == '/api/auth/user':
+            # Always return a demo user
+            self.send_json_response({
+                'id': 1,
+                'username': 'demo_user',
+                'email': 'demo@example.com',
+                'role': 'admin',
+                'created_at': datetime.now().isoformat(),
+                'last_login': datetime.now().isoformat()
             })
         else:
             self.send_error(404)
@@ -230,8 +259,8 @@ if __name__ == "__main__":
     print("----------------------")
     print("This version automatically monitors your system for ransomware activity.")
     
-    # Open browser
-    threading.Thread(target=lambda: webbrowser.open(f"http://localhost:{PORT}"), daemon=True).start()
+    # Open browser directly to the dashboard
+    threading.Thread(target=lambda: webbrowser.open(f"http://localhost:{PORT}/dashboard"), daemon=True).start()
     
     # Run server
     run_server()

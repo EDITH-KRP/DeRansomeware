@@ -1,7 +1,7 @@
 /**
  * De-Ransom WebSocket Client
- * --------------------------
- * This script handles real-time updates from the server using WebSockets.
+ * -------------------------
+ * This script provides a WebSocket client for real-time communication with the server.
  */
 
 class DeRansomSocket {
@@ -37,6 +37,7 @@ class DeRansomSocket {
         }
         
         try {
+            console.log(`Connecting to WebSocket at ${this.url}`);
             this.socket = new WebSocket(this.url);
             
             this.socket.onopen = () => {
@@ -125,6 +126,7 @@ class DeRansomSocket {
     handleMessage(event) {
         try {
             const data = JSON.parse(event.data);
+            console.log('WebSocket message received:', data);
             
             // Handle different message types
             switch (data.type) {
@@ -138,6 +140,13 @@ class DeRansomSocket {
                 case 'ping':
                     // Respond to ping with pong
                     this.socket.send(JSON.stringify({ type: 'pong' }));
+                    break;
+                    
+                case 'status_update':
+                    // Handle status updates
+                    if (this.options.onStatusUpdate) {
+                        this.options.onStatusUpdate(data);
+                    }
                     break;
                     
                 default:
@@ -159,9 +168,4 @@ class DeRansomSocket {
             console.error('Cannot send message: WebSocket not connected');
         }
     }
-}
-
-// For use in the browser
-if (typeof window !== 'undefined') {
-    window.DeRansomSocket = DeRansomSocket;
 }

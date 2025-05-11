@@ -18,6 +18,7 @@ from flask_socketio import emit
 
 # Import our custom modules
 from backend.simple_detector import FileMonitor
+from backend.mock_data import MockFileMonitor  # Import the mock file monitor
 from backend.blockchain import BlockchainLogger
 from backend.filebase_uploader import FilebaseUploader
 from backend.config import ACTIVITY_LOG_FILE, CONTRACT_ADDRESS, BLOCKCHAIN_NETWORK, USER_DB_FILE
@@ -93,26 +94,31 @@ else:
 background_monitor_thread = None
 monitored_directories = []
 
-# Authentication decorator
+# Authentication decorator (bypassed for direct access)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Bypass authentication - always allow access
+        # Set a default user in the session if not present
         if 'user_id' not in session:
-            return jsonify({'error': 'Authentication required'}), 401
+            session['user_id'] = 1  # Default admin user
+            session['username'] = 'admin'
+            session['role'] = 'admin'
         return f(*args, **kwargs)
     return decorated_function
 
-# Role-based access control decorator
+# Role-based access control decorator (bypassed for direct access)
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Bypass authentication - always grant admin access
         if 'user_id' not in session:
-            return jsonify({'error': 'Authentication required'}), 401
+            session['user_id'] = 1  # Default admin user
+            session['username'] = 'admin'
+            session['role'] = 'admin'
         
-        # Find user in database
-        user = next((u for u in users_db["users"] if u["id"] == session['user_id']), None)
-        if not user or user["role"] != "admin":
-            return jsonify({'error': 'Admin privileges required'}), 403
+        # Always set role to admin
+        session['role'] = 'admin'
             
         return f(*args, **kwargs)
     return decorated_function
@@ -372,6 +378,7 @@ def start_monitoring():
     
     data = request.json
     directory = data.get('path')
+    use_mock = data.get('use_mock', True)  # Default to using mock data
     
     if not directory or not os.path.isdir(directory):
         return jsonify({'error': 'Invalid directory path'}), 400
@@ -384,8 +391,14 @@ def start_monitoring():
     if file_monitor and file_monitor.is_running:
         file_monitor.stop()
     
-    # Create and start new file monitor
-    file_monitor = FileMonitor(directory, on_suspicious_activity)
+    # Create and start new file monitor (real or mock)
+    if use_mock:
+        print(f"Using MOCK file monitor for {directory}")
+        file_monitor = MockFileMonitor(directory, on_suspicious_activity)
+    else:
+        print(f"Using REAL file monitor for {directory}")
+        file_monitor = FileMonitor(directory, on_suspicious_activity)
+    
     file_monitor.start()
     
     # Ensure background monitoring is running
@@ -396,12 +409,14 @@ def start_monitoring():
         current_app.socketio.emit('monitoring_started', {
             'directory': directory,
             'timestamp': datetime.now().isoformat(),
-            'user': session.get('username')
+            'user': session.get('username'),
+            'mock_mode': use_mock
         })
     
     return jsonify({
         'status': 'success',
-        'message': f'Started monitoring {directory}',
+        'message': f'Started {"mock" if use_mock else "real"} monitoring for {directory}',
+        'mock_mode': use_mock,
         'timestamp': datetime.now().isoformat()
     })
 

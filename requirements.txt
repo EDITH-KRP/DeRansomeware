@@ -1,5 +1,7 @@
 flask==2.2.3
 flask-cors==3.0.10
+flask-socketio==5.3.2
+flask-session==0.4.0
 watchdog==2.3.1
 web3==6.0.0
 python-dotenv==1.0.0

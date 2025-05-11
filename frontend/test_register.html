@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Registration Form</h1>
+    
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit">Register</button>
+    </form>
+    
+    <div id="result" class="result"></div>
+    
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Sending registration request...';
+            
+            try {
+                // Method 1: Using fetch API
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h3>Response (fetch):</h3>
+                    <p>Status: ${response.status}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                // Method 2: Using XMLHttpRequest
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://localhost:5000/api/auth/register', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.withCredentials = true;
+                
+                xhr.onload = function() {
+                    let xhrResult = '';
+                    try {
+                        const xhrData = JSON.parse(xhr.responseText);
+                        xhrResult = JSON.stringify(xhrData, null, 2);
+                    } catch (e) {
+                        xhrResult = xhr.responseText;
+                    }
+                    
+                    resultDiv.innerHTML += `
+                        <h3>Response (XMLHttpRequest):</h3>
+                        <p>Status: ${xhr.status}</p>
+                        <pre>${xhrResult}</pre>
+                    `;
+                };
+                
+                xhr.onerror = function() {
+                    resultDiv.innerHTML += `
+                        <h3>Response (XMLHttpRequest):</h3>
+                        <p>Error: Network error occurred</p>
+                    `;
+                };
+                
+                xhr.send(JSON.stringify({ username, email, password }));
+                
+                // Method 3: Using jQuery-like AJAX
+                const ajaxRequest = new Promise((resolve, reject) => {
+                    const xhrAjax = new XMLHttpRequest();
+                    xhrAjax.open('POST', 'http://localhost:5000/api/auth/register', true);
+                    xhrAjax.setRequestHeader('Content-Type', 'application/json');
+                    xhrAjax.withCredentials = true;
+                    
+                    xhrAjax.onload = function() {
+                        if (this.status >= 200 && this.status < 300) {
+                            resolve(xhrAjax.response);
+                        } else {
+                            reject({
+                                status: this.status,
+                                statusText: xhrAjax.statusText,
+                                response: xhrAjax.response
+                            });
+                        }
+                    };
+                    
+                    xhrAjax.onerror = function() {
+                        reject({
+                            status: this.status,
+                            statusText: xhrAjax.statusText,
+                            response: 'Network error'
+                        });
+                    };
+                    
+                    xhrAjax.send(JSON.stringify({ username, email, password }));
+                });
+                
+                ajaxRequest.then(
+                    response => {
+                        let ajaxResult = '';
+                        try {
+                            const ajaxData = JSON.parse(response);
+                            ajaxResult = JSON.stringify(ajaxData, null, 2);
+                        } catch (e) {
+                            ajaxResult = response;
+                        }
+                        
+                        resultDiv.innerHTML += `
+                            <h3>Response (AJAX):</h3>
+                            <p>Status: Success</p>
+                            <pre>${ajaxResult}</pre>
+                        `;
+                    },
+                    error => {
+                        let errorText = '';
+                        try {
+                            errorText = JSON.stringify(error, null, 2);
+                        } catch (e) {
+                            errorText = String(error);
+                        }
+                        
+                        resultDiv.innerHTML += `
+                            <h3>Response (AJAX):</h3>
+                            <p>Status: Error</p>
+                            <pre>${errorText}</pre>
+                        `;
+                    }
+                );
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

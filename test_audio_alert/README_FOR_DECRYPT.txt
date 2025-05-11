@@ -1,0 +1,12 @@
+
+    !!!!! YOUR FILES HAVE BEEN ENCRYPTED !!!!!
+    
+    All your files have been encrypted with a strong algorithm.
+    To decrypt your files, you need to pay a ransom of 1 Bitcoin.
+    
+    Contact us at: evil@ransomware.example
+    
+    Your decryption ID: 404049
+    
+    WARNING: Do not attempt to decrypt files yourself or they will be permanently lost.
+    

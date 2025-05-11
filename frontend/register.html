@@ -366,7 +366,7 @@
                 
                 // Use XMLHttpRequest for better error reporting
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:5000/api/auth/register', true);
+                xhr.open('POST', 'http://localhost:5003/register', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.withCredentials = true;
                 
@@ -384,7 +384,7 @@
                             
                             // Redirect to login page after a delay
                             setTimeout(() => {
-                                window.location.href = 'login.html';
+                                window.location.href = '/frontend/login.html';
                             }, 2000);
                         } else {
                             // Error
